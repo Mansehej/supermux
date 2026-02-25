@@ -1,11 +1,11 @@
-# tmx
+# supermux
 
 Directory-scoped tmux session manager + fzf TUI.
 
 ## Install
 
 - tmux is required
-- fzf is required for the interactive picker (`tmx` with no subcommand)
+- fzf is required for the interactive picker (`supermux` with no subcommand)
 
 ```sh
 ./scripts/install.sh
@@ -21,12 +21,12 @@ tmux source-file ~/.tmux.conf
 ## Usage
 
 ```sh
-tmx new hello-world   # create/switch session scoped to current dir
-tmx list              # list sessions scoped to current dir
-tmx                   # interactive picker (search includes pane processes)
-tmx kill              # interactive kill
-tmx detach            # if inside tmux: detach current client
-tmx detach NAME       # detach clients attached to scoped session NAME
+supermux new hello-world   # create/switch session scoped to current dir
+supermux list              # list sessions scoped to current dir
+supermux                   # interactive picker (search includes pane processes)
+supermux kill              # interactive kill
+supermux detach            # if inside tmux: detach current client
+supermux detach NAME       # detach clients attached to scoped session NAME
 ```
 
 ## Notes

@@ -10,7 +10,7 @@ ALL="${TMX_ALL:-0}"
 TSV=0
 
 have() { command -v "$1" >/dev/null 2>&1; }
-die() { printf 'tmx: %s\n' "$*" >&2; exit 1; }
+die() { printf 'supermux: %s\n' "$*" >&2; exit 1; }
 
 require_tmux() { have "$TMUX_BIN" || die "tmux not found"; }
 require_fzf() { have fzf || die "fzf not found (macOS: brew install fzf)"; }
@@ -247,7 +247,7 @@ pick_interactive() {
   picked="$(
     list_lines \
     | fzf --delimiter=$'\t' --with-nth="$with_nth" \
-      --prompt='tmux> ' \
+      --prompt='supermux> ' \
       --query="${FZF_QUERY:-}" \
       --header=$'Enter: attach/switch   Ctrl-D: detach selected   Ctrl-X: kill selected   Ctrl-R: refresh' \
       --preview "$self_q __preview {2}" --preview-window=down,60%,wrap \
@@ -310,11 +310,11 @@ kill_interactive() {
 usage() {
   cat <<'TMX_USAGE'
 Usage:
-  tmx new NAME            Create/switch to NAME scoped to current dir
-  tmx list                List sessions scoped to current dir
-  tmx detach [NAME]       Detach current client or detach NAME's clients
-  tmx                     Interactive picker (requires fzf)
-  tmx kill                Interactive kill (requires fzf)
+  supermux new NAME            Create/switch to NAME scoped to current dir
+  supermux list                List sessions scoped to current dir
+  supermux detach [NAME]       Detach current client or detach NAME's clients
+  supermux                     Interactive picker (requires fzf)
+  supermux kill                Interactive kill (requires fzf)
 
 Options:
   -a, --all               Use all sessions (list/picker/kill)
@@ -454,7 +454,7 @@ case "$cmd" in
         exit 0
       fi
 
-      die "not in tmux; use: tmx detach NAME"
+      die "not in tmux; use: supermux detach NAME"
     fi
 
     logical="$1"
