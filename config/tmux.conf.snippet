@@ -1,0 +1,35 @@
+set -g mouse on
+set -g set-clipboard on
+if-shell 'command -v pbcopy >/dev/null 2>&1' 'set -s copy-command "pbcopy"'
+
+set -g status-position top
+set -g status 2
+
+set -g status-style "bg=#0b0f14,fg=#9ca3af"
+set -g message-style "bg=#111827,fg=#e5e7eb"
+set -g message-command-style "bg=#111827,fg=#e5e7eb"
+
+set -g status-left-length 60
+set -g status-left "#[fg=#ff7a18,bold]  #S  #[fg=#6b7280]#{?client_prefix,#[fg=#ff7a18]PREFIX ,}#[default]"
+
+set -g status-right-length 150
+set -g status-right "#[fg=#6b7280]  #{=40:pane_current_path}  #[fg=#9ca3af]%a %b %d  #[fg=#e5e7eb,bold]%H:%M  #[default]"
+
+setw -g window-status-separator ""
+setw -g window-status-format "#[fg=#6b7280]  #I:#{=18:window_name}  #[default]"
+setw -g window-status-current-format "#[bg=#111827,fg=#ff7a18]|#[bg=#111827,fg=#e5e7eb,bold] #I:#{=18:window_name}  #[default]"
+setw -g window-status-activity-style "bg=#0b0f14,fg=#f59e0b"
+setw -g window-status-bell-style "bg=#0b0f14,fg=#ef4444"
+
+set -g pane-border-style "fg=#1f2937"
+set -g pane-active-border-style "fg=#ff7a18"
+
+set -g pane-border-status top
+set -g pane-border-format "#{?pane_active,#[bg=#111827,fg=#ff7a18]|#[bg=#111827,fg=#e5e7eb,bold],#[fg=#6b7280]  } #{pane_index}:#{=20:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}} #[default]"
+
+set -g status-format[1] "#[align=left]#{P:#{?pane_active,#[bg=#111827,fg=#ff7a18]|#[bg=#111827,fg=#e5e7eb,bold],#[fg=#6b7280]  } #{pane_index}:#{=12:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}}  #[default]}"
+
+bind-key -n C-d split-window -h -c "#{pane_current_path}"
+bind-key -n C-w kill-pane
+bind-key -n C-s detach-client
+bind-key P command-prompt -I "#{@tmx_label}" -p "Pane name:" "set-option -p @tmx_label '%%'"
