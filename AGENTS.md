@@ -88,6 +88,7 @@ These are part of the user-facing interface; keep them stable.
 - `TMX_SCOPE_MODE` / `--scope-mode pwd|git` - scope by exact dir or git root
 - `TMX_QUERY` / `TMX_PROCESS_QUERY` / `--query STR` - prefilter picker entries
 - `TMX_ALL` / `--all` - include sessions outside the current scope (list/picker/kill)
+- `TMX_COLOR_MODE` - picker color mode override: `truecolor` or `ansi`
 
 ## Code style guidelines
 

@@ -31,6 +31,10 @@ const dataFile = arg("--data-file")
 const resultFile = arg("--result-file")
 const query = (arg("--query") ?? "").toLowerCase().trim()
 
+const termProgram = process.env.TERM_PROGRAM ?? ""
+const colorMode = (process.env.TMX_COLOR_MODE ?? (termProgram === "Apple_Terminal" ? "ansi" : "truecolor")).toLowerCase()
+const useShadedBackgrounds = colorMode !== "ansi"
+
 const normalizeSessionName = (value: string) =>
   value
     .replace(/[\t\r\n]+/g, " ")
@@ -109,12 +113,11 @@ const root = new BoxRenderable(renderer, {
 
 renderer.root.add(root)
 
-const frame = new BoxRenderable(renderer, {
+const frameProps: ConstructorParameters<typeof BoxRenderable>[1] = {
   width: "86%",
   height: "86%",
   minWidth: 56,
   minHeight: 16,
-  backgroundColor: RGBA.fromHex("#0d1218"),
   flexDirection: "column",
   justifyContent: items.length ? "flex-start" : "center",
   alignItems: "center",
@@ -123,7 +126,11 @@ const frame = new BoxRenderable(renderer, {
   paddingLeft: 2,
   paddingRight: 2,
   gap: 1,
-})
+}
+if (useShadedBackgrounds) {
+  frameProps.backgroundColor = RGBA.fromHex("#0d1218")
+}
+const frame = new BoxRenderable(renderer, frameProps)
 
 root.add(frame)
 
@@ -169,15 +176,18 @@ if (items.length) {
     }),
   )
 
-  const list = new BoxRenderable(renderer, {
+  const listProps: ConstructorParameters<typeof BoxRenderable>[1] = {
     width: "100%",
     flexGrow: 1,
-    backgroundColor: panelBase,
     paddingTop: 1,
     paddingBottom: 1,
     paddingLeft: 1,
     paddingRight: 1,
-  })
+  }
+  if (useShadedBackgrounds) {
+    listProps.backgroundColor = panelBase
+  }
+  const list = new BoxRenderable(renderer, listProps)
 
   frame.add(list)
 
@@ -192,11 +202,15 @@ if (items.length) {
     })),
   })
 
-  select.backgroundColor = panelBase
+  if (useShadedBackgrounds) {
+    select.backgroundColor = panelBase
+  }
   select.textColor = panelText
   select.descriptionColor = panelMuted
-  select.selectedBackgroundColor = selectionShade
-  select.focusedBackgroundColor = selectionShadeFocus
+  if (useShadedBackgrounds) {
+    select.selectedBackgroundColor = selectionShade
+    select.focusedBackgroundColor = selectionShadeFocus
+  }
   select.selectedTextColor = accentPrimary
   select.selectedDescriptionColor = panelText
 
@@ -235,16 +249,19 @@ if (items.length) {
 }
 
 const createEnabled = mode === "pick"
-const createBox = new BoxRenderable(renderer, {
+const createBoxProps: ConstructorParameters<typeof BoxRenderable>[1] = {
   width: "100%",
-  backgroundColor: panelRaised,
   flexDirection: "column",
   gap: 1,
   paddingTop: 1,
   paddingBottom: 1,
   paddingLeft: 2,
   paddingRight: 2,
-})
+}
+if (useShadedBackgrounds) {
+  createBoxProps.backgroundColor = panelRaised
+}
+const createBox = new BoxRenderable(renderer, createBoxProps)
 const createTitle = new TextRenderable(renderer, {
   content: "NEW SESSION",
   fg: accentPrimary,

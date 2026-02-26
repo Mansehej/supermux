@@ -60,5 +60,6 @@ See `packaging/README.md` for publish/distribution notes.
 - Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).
 - Tab keybind settings: `@tmx_bind_new_tab`, `@tmx_bind_tab_select` (`on`/`off`).
 - For macOS terminals, Option usually needs to be configured as Meta/Alt for `Alt/Option-*` bindings.
+- Color mode override: set `TMX_COLOR_MODE=truecolor` or `TMX_COLOR_MODE=ansi` (Apple Terminal defaults to `ansi` for picker stability).
 - Example toggle: `tmux set -g @tmx_bind_split off; tmux source-file ~/.tmux.conf`
 - If `Ctrl-s` detach is enabled and your terminal uses XON/XOFF flow control, run `stty -ixon`.
