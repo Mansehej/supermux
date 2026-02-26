@@ -498,181 +498,187 @@ Options:
 TMX_USAGE
 }
 
-cmd=""
-cmd_args=()
-end_opts=0
+main() {
+  local cmd=""
+  local cmd_args=()
+  local end_opts=0
 
-while [[ $# -gt 0 ]]; do
-  if [[ "$end_opts" == "1" ]]; then
-    if [[ -z "$cmd" ]]; then
-      cmd="$1"
-    else
-      cmd_args+=("$1")
-    fi
-    shift
-    continue
-  fi
-
-  case "$1" in
-    --)
-      end_opts=1
-      shift
-      ;;
-    -a|--all)
-      ALL=1
-      shift
-      ;;
-    -p|--process|-q|--query)
-      [[ $# -ge 2 ]] || die "missing value for $1"
-      PICKER_QUERY="$2"
-      shift 2
-      ;;
-    --tsv)
-      TSV=1
-      shift
-      ;;
-    --scope)
-      [[ $# -ge 2 ]] || die "missing value for $1"
-      SCOPE_DIR="$2"
-      shift 2
-      ;;
-    --socket)
-      [[ $# -ge 2 ]] || die "missing value for $1"
-      TMUX_SOCKET_NAME="$2"
-      TMUX_SOCKET_PATH=""
-      shift 2
-      ;;
-    --socket-path)
-      [[ $# -ge 2 ]] || die "missing value for $1"
-      TMUX_SOCKET_PATH="$2"
-      TMUX_SOCKET_NAME=""
-      shift 2
-      ;;
-    --scope-mode)
-      [[ $# -ge 2 ]] || die "missing value for $1"
-      SCOPE_MODE="$2"
-      shift 2
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    -* )
-      die "unknown option: $1"
-      ;;
-    *)
+  while [[ $# -gt 0 ]]; do
+    if [[ "$end_opts" == "1" ]]; then
       if [[ -z "$cmd" ]]; then
         cmd="$1"
       else
         cmd_args+=("$1")
       fi
       shift
+      continue
+    fi
+
+    case "$1" in
+      --)
+        end_opts=1
+        shift
+        ;;
+      -a|--all)
+        ALL=1
+        shift
+        ;;
+      -p|--process|-q|--query)
+        [[ $# -ge 2 ]] || die "missing value for $1"
+        PICKER_QUERY="$2"
+        shift 2
+        ;;
+      --tsv)
+        TSV=1
+        shift
+        ;;
+      --scope)
+        [[ $# -ge 2 ]] || die "missing value for $1"
+        SCOPE_DIR="$2"
+        shift 2
+        ;;
+      --socket)
+        [[ $# -ge 2 ]] || die "missing value for $1"
+        TMUX_SOCKET_NAME="$2"
+        TMUX_SOCKET_PATH=""
+        shift 2
+        ;;
+      --socket-path)
+        [[ $# -ge 2 ]] || die "missing value for $1"
+        TMUX_SOCKET_PATH="$2"
+        TMUX_SOCKET_NAME=""
+        shift 2
+        ;;
+      --scope-mode)
+        [[ $# -ge 2 ]] || die "missing value for $1"
+        SCOPE_MODE="$2"
+        shift 2
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      -* )
+        die "unknown option: $1"
+        ;;
+      *)
+        if [[ -z "$cmd" ]]; then
+          cmd="$1"
+        else
+          cmd_args+=("$1")
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  [[ -n "$cmd" ]] || cmd="pick"
+  if [[ ${#cmd_args[@]} -gt 0 ]]; then
+    set -- "${cmd_args[@]}"
+  else
+    set --
+  fi
+
+  require_tmux
+  SCOPE_ROOT="$(scope_root)"
+
+  export TMX_SCOPE_DIR="$SCOPE_DIR"
+  export TMX_SCOPE_MODE="$SCOPE_MODE"
+  export TMX_QUERY="$PICKER_QUERY"
+  export TMX_ALL="$ALL"
+  export TMX_TMUX_SOCKET="$TMUX_SOCKET_NAME"
+  export TMX_TMUX_SOCKET_PATH="$TMUX_SOCKET_PATH"
+
+  TMX_SELF="${BASH_SOURCE[0]}"
+  if [[ "$TMX_SELF" != /* ]]; then
+    p="$(command -v "$TMX_SELF" 2>/dev/null || true)"
+    [[ -n "$p" ]] && TMX_SELF="$p"
+  fi
+  export TMX_SELF
+
+  case "$cmd" in
+    __list)
+      list_lines
       ;;
-  esac
-done
+    __pick_list)
+      list_picker_lines
+      ;;
+    __preview)
+      preview_one "${1:-}" "${2:-}"
+      ;;
+    __detach)
+      detach_sessions "$@"
+      ;;
+    __kill)
+      kill_sessions "$@"
+      ;;
 
-[[ -n "$cmd" ]] || cmd="pick"
-if [[ ${#cmd_args[@]} -gt 0 ]]; then
-  set -- "${cmd_args[@]}"
-else
-  set --
-fi
+    new)
+      new_session "${1:-}"
+      ;;
 
-require_tmux
-SCOPE_ROOT="$(scope_root)"
+    detach)
+      if [[ $# -eq 0 ]]; then
+        if [[ -n "${TMUX:-}" ]]; then
+          "$TMUX_BIN" detach-client
+          exit 0
+        fi
 
-export TMX_SCOPE_DIR="$SCOPE_DIR"
-export TMX_SCOPE_MODE="$SCOPE_MODE"
-export TMX_QUERY="$PICKER_QUERY"
-export TMX_ALL="$ALL"
-export TMX_TMUX_SOCKET="$TMUX_SOCKET_NAME"
-export TMX_TMUX_SOCKET_PATH="$TMUX_SOCKET_PATH"
-
-TMX_SELF="${BASH_SOURCE[0]}"
-if [[ "$TMX_SELF" != /* ]]; then
-  p="$(command -v "$TMX_SELF" 2>/dev/null || true)"
-  [[ -n "$p" ]] && TMX_SELF="$p"
-fi
-export TMX_SELF
-
-case "$cmd" in
-  __list)
-    list_lines
-    ;;
-  __pick_list)
-    list_picker_lines
-    ;;
-  __preview)
-    preview_one "${1:-}" "${2:-}"
-    ;;
-  __detach)
-    detach_sessions "$@"
-    ;;
-  __kill)
-    kill_sessions "$@"
-    ;;
-
-  new)
-    new_session "${1:-}"
-    ;;
-
-  detach)
-    if [[ $# -eq 0 ]]; then
-      if [[ -n "${TMUX:-}" ]]; then
-        "$TMUX_BIN" detach-client
+        require_bun
+        run_opentui_picker_loop detach
         exit 0
       fi
 
-      require_bun
-      run_opentui_picker_loop detach
-      exit 0
-    fi
+      logical="$1"
+      session="$(find_session_by_meta "$SCOPE_ROOT" "$logical" || true)"
+      [[ -n "$session" ]] || die "no session '$logical' in scope ($SCOPE_ROOT)"
 
-    logical="$1"
-    session="$(find_session_by_meta "$SCOPE_ROOT" "$logical" || true)"
-    [[ -n "$session" ]] || die "no session '$logical' in scope ($SCOPE_ROOT)"
+      tmux_cmd detach-client -s "$session" 2>/dev/null || true
+      ;;
 
-    tmux_cmd detach-client -s "$session" 2>/dev/null || true
-    ;;
-
-  list|ls)
-    if [[ "$TSV" == "1" ]]; then
-      list_lines
-      exit 0
-    fi
-
-    if have column; then
-      if [[ "$ALL" == "1" ]]; then
-        { printf 'NAME\tSESSION\tDIR\tW\tATT\tACTIVITY\tPROCS\n'; list_lines; } | column -t -s $'\t'
-      else
-        { printf 'NAME\tSESSION\tW\tATT\tACTIVITY\tPROCS\n'; list_lines | awk -F$'\t' 'BEGIN{OFS="\t"} {print $1,$2,$4,$5,$6,$7}'; } | column -t -s $'\t'
-      fi
-    else
-      if [[ "$ALL" == "1" ]]; then
-        printf 'NAME\tSESSION\tDIR\tW\tATT\tACTIVITY\tPROCS\n'
+    list|ls)
+      if [[ "$TSV" == "1" ]]; then
         list_lines
-      else
-        printf 'NAME\tSESSION\tW\tATT\tACTIVITY\tPROCS\n'
-        list_lines | awk -F$'\t' 'BEGIN{OFS="\t"} {print $1,$2,$4,$5,$6,$7}'
+        exit 0
       fi
-    fi
-    ;;
 
-  pick)
-    pick_interactive
-    ;;
+      if have column; then
+        if [[ "$ALL" == "1" ]]; then
+          { printf 'NAME\tSESSION\tDIR\tW\tATT\tACTIVITY\tPROCS\n'; list_lines; } | column -t -s $'\t'
+        else
+          { printf 'NAME\tSESSION\tW\tATT\tACTIVITY\tPROCS\n'; list_lines | awk -F$'\t' 'BEGIN{OFS="\t"} {print $1,$2,$4,$5,$6,$7}'; } | column -t -s $'\t'
+        fi
+      else
+        if [[ "$ALL" == "1" ]]; then
+          printf 'NAME\tSESSION\tDIR\tW\tATT\tACTIVITY\tPROCS\n'
+          list_lines
+        else
+          printf 'NAME\tSESSION\tW\tATT\tACTIVITY\tPROCS\n'
+          list_lines | awk -F$'\t' 'BEGIN{OFS="\t"} {print $1,$2,$4,$5,$6,$7}'
+        fi
+      fi
+      ;;
 
-  all)
-    ALL=1
-    export TMX_ALL=1
-    pick_interactive
-    ;;
+    pick)
+      pick_interactive
+      ;;
 
-  kill)
-    kill_interactive
-    ;;
+    all)
+      ALL=1
+      export TMX_ALL=1
+      pick_interactive
+      ;;
 
-  *)
-    die "unknown command: $cmd"
-    ;;
-esac
+    kill)
+      kill_interactive
+      ;;
+
+    *)
+      die "unknown command: $cmd"
+      ;;
+  esac
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

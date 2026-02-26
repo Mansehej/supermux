@@ -31,6 +31,14 @@ supermux detach            # if inside tmux: detach current client
 supermux detach NAME       # detach clients attached to scoped session NAME
 ```
 
+## Testing
+
+```sh
+./test/run.sh unit   # unit tests (Bash helpers)
+./test/run.sh e2e    # end-to-end tab keybind test (tmux + pilotty)
+./test/run.sh all    # run everything
+```
+
 ## Notes
 
 - Scope mode: set `TMX_SCOPE_MODE=git` to scope sessions by git root instead of exact `pwd`.

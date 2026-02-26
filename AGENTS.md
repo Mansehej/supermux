@@ -51,19 +51,12 @@ There is no build step (scripts are run directly).
 
 ### Tests
 
-- No automated test suite exists in this repo today.
-- Recommended quick, non-interactive smoke checks:
+- Unit tests: `./test/run.sh unit`
+- E2E tests (tmux + pilotty): `./test/run.sh e2e`
+- Full suite: `./test/run.sh all`
+- Quick smoke checks:
   - `./bin/supermux list --tsv` (should exit 0 even if no tmux server exists)
   - `./bin/supermux list` (human-readable; same behavior)
-- Manual integration check (will attach to tmux):
-  - `./bin/supermux new agent-smoke` (detach with `supermux detach` or `Ctrl-s` if snippet installed)
-  - `./bin/supermux detach agent-smoke`
-  - `./bin/supermux kill`
-
-If you add a Bash test framework later (e.g. Bats), document it here. Typical single-test patterns:
-
-- Run one test file: `bats test/supermux.bats`
-- Run a single test by name/regex: `bats -f 'sanitize_session_name' test/supermux.bats`
 
 ## CLI behavior and extension points
 
