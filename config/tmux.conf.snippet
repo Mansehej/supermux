@@ -84,6 +84,10 @@ unbind-key -q -n C-Left
 unbind-key -q -n C-Right
 unbind-key -q -n M-Left
 unbind-key -q -n M-Right
+unbind-key -q -n C-PPage
+unbind-key -q -n C-NPage
+unbind-key -q -n M-PPage
+unbind-key -q -n M-NPage
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-1 select-window -t 0"
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-2 select-window -t 1"
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-3 select-window -t 2"
@@ -108,3 +112,12 @@ if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-Left previous-window"
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-Right next-window"
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-Left previous-window"
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-Right next-window"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-PPage previous-window"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-NPage next-window"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-PPage previous-window"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-NPage next-window"
+
+unbind-key -q -n MouseDown3Status
+bind-key -n MouseUp3Status display-menu -T "#[align=centre]TAB #{window_index}:#{window_name}" -t = -x W -y W "New Tab" t { new-window -a -c "#{pane_current_path}" } "Rename Tab" r { command-prompt -I "#{window_name}" "rename-window -t = '%%'" } '' "Close Tab" x { kill-window -t = }
+unbind-key -q -n MouseDown3StatusLeft
+bind-key -n MouseUp3StatusLeft display-menu -T "#[align=centre]SESSION #{session_name}" -t = -x M -y W "Previous Tab" p { previous-window } "Next Tab" n { next-window } '' "New Tab" t { new-window -a -c "#{pane_current_path}" }
