@@ -33,7 +33,8 @@ const query = (arg("--query") ?? "").toLowerCase().trim()
 
 const termProgram = process.env.TERM_PROGRAM ?? ""
 const colorMode = (process.env.TMX_COLOR_MODE ?? (termProgram === "Apple_Terminal" ? "ansi" : "truecolor")).toLowerCase()
-const useShadedBackgrounds = colorMode !== "ansi"
+const isAnsi = colorMode === "ansi"
+const useShadedBackgrounds = !isAnsi
 
 const normalizeSessionName = (value: string) =>
   value
@@ -68,13 +69,13 @@ const renderer = await createCliRenderer({
   exitOnCtrlC: false,
 })
 
-const panelBase = RGBA.fromHex("#111821")
-const panelRaised = RGBA.fromHex("#18222d")
-const panelMuted = RGBA.fromHex("#8698af")
-const panelText = RGBA.fromHex("#c8d4e4")
-const accentPrimary = RGBA.fromHex("#ff8b7e")
-const selectionShade = RGBA.fromHex("#223142")
-const selectionShadeFocus = RGBA.fromHex("#2b3e52")
+const panelBase = isAnsi ? RGBA.fromHex("#1c1c1c") : RGBA.fromHex("#111821")
+const panelRaised = isAnsi ? RGBA.fromHex("#262626") : RGBA.fromHex("#18222d")
+const panelMuted = isAnsi ? RGBA.fromHex("#87afd7") : RGBA.fromHex("#8698af")
+const panelText = isAnsi ? RGBA.fromHex("#e4e4e4") : RGBA.fromHex("#c8d4e4")
+const accentPrimary = isAnsi ? RGBA.fromHex("#ff875f") : RGBA.fromHex("#ff8b7e")
+const selectionShade = isAnsi ? RGBA.fromHex("#303030") : RGBA.fromHex("#223142")
+const selectionShadeFocus = isAnsi ? RGBA.fromHex("#3a3a3a") : RGBA.fromHex("#2b3e52")
 
 let index = 0
 let done = false
@@ -148,7 +149,7 @@ hero.add(
   new ASCIIFontRenderable(renderer, {
     text: "SUPERMUX",
     font: "tiny",
-    color: RGBA.fromHex("#ff7f73"),
+    color: accentPrimary,
   }),
 )
 
@@ -207,10 +208,8 @@ if (items.length) {
   }
   select.textColor = panelText
   select.descriptionColor = panelMuted
-  if (useShadedBackgrounds) {
-    select.selectedBackgroundColor = selectionShade
-    select.focusedBackgroundColor = selectionShadeFocus
-  }
+  select.selectedBackgroundColor = selectionShade
+  select.focusedBackgroundColor = selectionShadeFocus
   select.selectedTextColor = accentPrimary
   select.selectedDescriptionColor = panelText
 
