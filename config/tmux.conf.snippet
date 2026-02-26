@@ -2,8 +2,14 @@ set -g mouse on
 set -g set-clipboard on
 if-shell 'command -v pbcopy >/dev/null 2>&1' 'set -s copy-command "pbcopy"'
 
+if -F "#{==:#{@tmx_bind_split},}" "set -g @tmx_bind_split on"
+if -F "#{==:#{@tmx_bind_kill_pane},}" "set -g @tmx_bind_kill_pane on"
+if -F "#{==:#{@tmx_bind_detach},}" "set -g @tmx_bind_detach on"
+if -F "#{==:#{@tmx_bind_rename_pane},}" "set -g @tmx_bind_rename_pane on"
+
 set -g status-position top
-set -g status 2
+set -g status on
+set -gu status-format[1]
 
 set -g status-style "bg=#0b0f14,fg=#9ca3af"
 set -g message-style "bg=#111827,fg=#e5e7eb"
@@ -21,15 +27,21 @@ setw -g window-status-current-format "#[bg=#111827,fg=#ff7a18]|#[bg=#111827,fg=#
 setw -g window-status-activity-style "bg=#0b0f14,fg=#f59e0b"
 setw -g window-status-bell-style "bg=#0b0f14,fg=#ef4444"
 
+set -g pane-border-lines single
 set -g pane-border-style "fg=#1f2937"
 set -g pane-active-border-style "fg=#ff7a18"
 
 set -g pane-border-status top
-set -g pane-border-format "#{?pane_active,#[bg=#111827,fg=#ff7a18]|#[bg=#111827,fg=#e5e7eb,bold],#[fg=#6b7280]  } #{pane_index}:#{=20:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}} #[default]"
+set -g pane-border-format "#[bg=#111827]#{?pane_active,#[fg=#ff7a18]#[bold]|,#[fg=#6b7280] } #[fg=#e5e7eb]#{pane_index}:#{=20:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}} #[default]"
 
-set -g status-format[1] "#[align=left]#{P:#{?pane_active,#[bg=#111827,fg=#ff7a18]|#[bg=#111827,fg=#e5e7eb,bold],#[fg=#6b7280]  } #{pane_index}:#{=12:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}}  #[default]}"
+unbind-key -q -n C-d
+if -F "#{==:#{@tmx_bind_split},on}" "bind-key -n C-d split-window -h -c '#{pane_current_path}'"
 
-bind-key -n C-d split-window -h -c "#{pane_current_path}"
-bind-key -n C-w kill-pane
-bind-key -n C-s detach-client
-bind-key P command-prompt -I "#{@tmx_label}" -p "Pane name:" "set-option -p @tmx_label '%%'"
+unbind-key -q -n C-w
+if -F "#{==:#{@tmx_bind_kill_pane},on}" "bind-key -n C-w kill-pane"
+
+unbind-key -q -n C-s
+if -F "#{==:#{@tmx_bind_detach},on}" "bind-key -n C-s detach-client"
+
+unbind-key -q P
+if -F "#{==:#{@tmx_bind_rename_pane},on}" "bind-key P command-prompt -I '#{@tmx_label}' -p 'Pane name:' \"set-option -p @tmx_label '%%'\""
