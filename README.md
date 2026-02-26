@@ -58,6 +58,7 @@ See `packaging/README.md` for publish/distribution notes.
 - Split keybinds: `Ctrl-D` splits right; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits down.
 - tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_split_vertical`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
 - Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).
+- Tab fallback controls: `Ctrl-Left`/`Ctrl-Right` (or `Alt-Left`/`Alt-Right`) cycle previous/next window.
 - Tab keybind settings: `@tmx_bind_new_tab`, `@tmx_bind_tab_select` (`on`/`off`).
 - For macOS terminals, Option usually needs to be configured as Meta/Alt for `Alt/Option-*` bindings.
 - Color mode override: set `TMX_COLOR_MODE=truecolor` or `TMX_COLOR_MODE=ansi` (Apple Terminal defaults to `ansi` for picker stability).
