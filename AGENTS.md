@@ -161,7 +161,8 @@ These are part of the user-facing interface; keep them stable.
 
 - Keep it appendable and self-contained (no plugin-manager assumptions).
 - Preserve existing keybinds unless there is a strong reason:
-  - `C-d` split, `C-w` kill pane, `C-s` detach, `P` rename pane label
+  - `C-d` split right, `C-D` split down, `C-w` kill pane, `C-s` detach, `P` rename pane label
+  - `C-t` new tab/window, `C-1..C-0` and `M-1..M-0` window switching
 - If you change UX defaults, update `README.md` accordingly.
 
 ## Editor/AI instruction files

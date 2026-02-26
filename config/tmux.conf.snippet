@@ -4,6 +4,7 @@ if-shell 'command -v pbcopy >/dev/null 2>&1' 'set -s copy-command "pbcopy"'
 set -sq extended-keys on
 
 if -F "#{==:#{@tmx_bind_split},}" "set -g @tmx_bind_split on"
+if -F "#{==:#{@tmx_bind_split_vertical},}" "set -g @tmx_bind_split_vertical on"
 if -F "#{==:#{@tmx_bind_kill_pane},}" "set -g @tmx_bind_kill_pane on"
 if -F "#{==:#{@tmx_bind_detach},}" "set -g @tmx_bind_detach on"
 if -F "#{==:#{@tmx_bind_rename_pane},}" "set -g @tmx_bind_rename_pane on"
@@ -39,6 +40,10 @@ set -g pane-border-format "#[bg=#111827]#{?pane_active,#[fg=#ff7a18]#[bold]|,#[f
 
 unbind-key -q -n C-d
 if -F "#{==:#{@tmx_bind_split},on}" "bind-key -n C-d split-window -h -c '#{pane_current_path}'"
+unbind-key -q -n C-D
+if -F "#{==:#{@tmx_bind_split_vertical},on}" "bind-key -n C-D split-window -v -c '#{pane_current_path}'"
+unbind-key -q -n M-D
+if -F "#{==:#{@tmx_bind_split_vertical},on}" "bind-key -n M-D split-window -v -c '#{pane_current_path}'"
 
 unbind-key -q -n C-w
 if -F "#{==:#{@tmx_bind_kill_pane},on}" "bind-key -n C-w kill-pane"

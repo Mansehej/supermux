@@ -53,6 +53,8 @@ keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" M-t                    new-window"* ]] || die "missing Alt-T bind"
 [[ "$keys" == *" C-1                    select-window -t 0"* ]] || die "missing Ctrl-1 bind"
 [[ "$keys" == *" M-1                    select-window -t 0"* ]] || die "missing Alt-1 bind"
+[[ "$keys" == *" C-D                    split-window -v -c \"#{pane_current_path}\""* ]] || die "missing Ctrl-Shift-D bind"
+[[ "$keys" == *" M-D                    split-window -v -c \"#{pane_current_path}\""* ]] || die "missing Alt-Shift-D bind"
 printf 'ok - keybindings registered\n'
 
 pilotty key -s "$PILOTTY_SESSION" Ctrl+T >/dev/null
@@ -71,8 +73,15 @@ assert_eq "0" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{wind
 pilotty type -s "$PILOTTY_SESSION" $'\e3' >/dev/null
 assert_eq "2" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Alt-3 sequence switches to third tab"
 
+pilotty type -s "$PILOTTY_SESSION" $'\e1' >/dev/null
+pane_before="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:0" '#{window_panes}')"
+pilotty type -s "$PILOTTY_SESSION" $'\eD' >/dev/null
+pane_after="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:0" '#{window_panes}')"
+assert_eq "$((pane_before + 1))" "$pane_after" "Alt-Shift-D splits current tab vertically"
+
 tmux -L "$SOCKET" set -g @tmx_bind_new_tab off
 tmux -L "$SOCKET" set -g @tmx_bind_tab_select off
+tmux -L "$SOCKET" set -g @tmx_bind_split_vertical off
 tmux -L "$SOCKET" source-file "$SNIPPET"
 
 keys="$(tmux -L "$SOCKET" list-keys -T root)"
@@ -80,6 +89,8 @@ keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" M-t                    new-window"* ]] && die "Alt-T should be disabled"
 [[ "$keys" == *" C-1                    select-window -t 0"* ]] && die "Ctrl-1 should be disabled"
 [[ "$keys" == *" M-1                    select-window -t 0"* ]] && die "Alt-1 should be disabled"
-printf 'ok - keybinding toggles disable tab bindings\n'
+[[ "$keys" == *" C-D                    split-window -v -c \"#{pane_current_path}\""* ]] && die "Ctrl-Shift-D should be disabled"
+[[ "$keys" == *" M-D                    split-window -v -c \"#{pane_current_path}\""* ]] && die "Alt-Shift-D should be disabled"
+printf 'ok - keybinding toggles disable tab and vertical split bindings\n'
 
 printf 'all e2e checks passed\n'

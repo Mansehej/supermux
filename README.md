@@ -55,7 +55,8 @@ See `packaging/README.md` for publish/distribution notes.
 - Scope mode: set `TMX_SCOPE_MODE=git` to scope sessions by git root instead of exact `pwd`.
 - Socket selection: use `--socket NAME` / `TMX_TMUX_SOCKET` (or `--socket-path PATH` / `TMX_TMUX_SOCKET_PATH`).
 - Opt out of the dedicated server: set `TMX_TMUX_SOCKET=` to use your default tmux server.
-- tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
+- Split keybinds: `Ctrl-D` splits right; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits down.
+- tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_split_vertical`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
 - Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).
 - Tab keybind settings: `@tmx_bind_new_tab`, `@tmx_bind_tab_select` (`on`/`off`).
 - For macOS terminals, Option usually needs to be configured as Meta/Alt for `Alt/Option-*` bindings.
