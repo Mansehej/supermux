@@ -2,6 +2,8 @@
 set -euo pipefail
 
 TMUX_BIN="${TMX_TMUX_BIN:-tmux}"
+TMUX_SOCKET_NAME="${TMX_TMUX_SOCKET-supermux}"
+TMUX_SOCKET_PATH="${TMX_TMUX_SOCKET_PATH:-}"
 
 PICKER_QUERY="${TMX_QUERY:-${TMX_PROCESS_QUERY:-}}"
 SCOPE_DIR="${TMX_SCOPE_DIR:-${PWD:-.}}"
@@ -232,7 +234,19 @@ short_hash() {
   printf '%s' "$input" | cksum | awk '{print $1}'
 }
 
-tmux_cmd() { "$TMUX_BIN" "$@"; }
+tmux_cmd() {
+  if [[ -n "$TMUX_SOCKET_PATH" ]]; then
+    "$TMUX_BIN" -S "$TMUX_SOCKET_PATH" "$@"
+    return
+  fi
+
+  if [[ -n "$TMUX_SOCKET_NAME" ]]; then
+    "$TMUX_BIN" -L "$TMUX_SOCKET_NAME" "$@"
+    return
+  fi
+
+  "$TMUX_BIN" "$@"
+}
 
 set_session_meta() {
   local session="$1"
@@ -299,7 +313,7 @@ attach_or_switch() {
   local session="$1"
   [[ -n "$session" ]] || return 0
 
-  if [[ -n "${TMUX:-}" ]]; then
+  if [[ -n "${TMUX:-}" ]] && tmux_cmd display-message -p '#{client_pid}' >/dev/null 2>&1; then
     tmux_cmd switch-client -t "$session"
   else
     tmux_cmd attach-session -t "$session"
@@ -476,6 +490,8 @@ Options:
   -a, --all               Use all sessions (list/picker/kill)
   -p, --process STR       Prefilter picker entries (alias: --query)
   -q, --query STR         Prefilter picker entries
+  --socket NAME           tmux socket name (default: supermux)
+  --socket-path PATH      tmux socket path (overrides --socket)
   --tsv                   list: output raw TSV
   --scope DIR             Scope to this directory (default: $PWD)
   --scope-mode pwd|git    Scope root mode (default: pwd)
@@ -520,6 +536,18 @@ while [[ $# -gt 0 ]]; do
       SCOPE_DIR="$2"
       shift 2
       ;;
+    --socket)
+      [[ $# -ge 2 ]] || die "missing value for $1"
+      TMUX_SOCKET_NAME="$2"
+      TMUX_SOCKET_PATH=""
+      shift 2
+      ;;
+    --socket-path)
+      [[ $# -ge 2 ]] || die "missing value for $1"
+      TMUX_SOCKET_PATH="$2"
+      TMUX_SOCKET_NAME=""
+      shift 2
+      ;;
     --scope-mode)
       [[ $# -ge 2 ]] || die "missing value for $1"
       SCOPE_MODE="$2"
@@ -557,6 +585,8 @@ export TMX_SCOPE_DIR="$SCOPE_DIR"
 export TMX_SCOPE_MODE="$SCOPE_MODE"
 export TMX_QUERY="$PICKER_QUERY"
 export TMX_ALL="$ALL"
+export TMX_TMUX_SOCKET="$TMUX_SOCKET_NAME"
+export TMX_TMUX_SOCKET_PATH="$TMUX_SOCKET_PATH"
 
 TMX_SELF="${BASH_SOURCE[0]}"
 if [[ "$TMX_SELF" != /* ]]; then
@@ -589,7 +619,7 @@ case "$cmd" in
   detach)
     if [[ $# -eq 0 ]]; then
       if [[ -n "${TMUX:-}" ]]; then
-        tmux_cmd detach-client
+        "$TMUX_BIN" detach-client
         exit 0
       fi
 

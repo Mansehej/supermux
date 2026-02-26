@@ -1,11 +1,14 @@
 set -g mouse on
 set -g set-clipboard on
 if-shell 'command -v pbcopy >/dev/null 2>&1' 'set -s copy-command "pbcopy"'
+set -sq extended-keys on
 
 if -F "#{==:#{@tmx_bind_split},}" "set -g @tmx_bind_split on"
 if -F "#{==:#{@tmx_bind_kill_pane},}" "set -g @tmx_bind_kill_pane on"
 if -F "#{==:#{@tmx_bind_detach},}" "set -g @tmx_bind_detach on"
 if -F "#{==:#{@tmx_bind_rename_pane},}" "set -g @tmx_bind_rename_pane on"
+if -F "#{==:#{@tmx_bind_new_tab},}" "set -g @tmx_bind_new_tab on"
+if -F "#{==:#{@tmx_bind_tab_select},}" "set -g @tmx_bind_tab_select on"
 
 set -g status-position top
 set -g status on
@@ -45,3 +48,49 @@ if -F "#{==:#{@tmx_bind_detach},on}" "bind-key -n C-s detach-client"
 
 unbind-key -q P
 if -F "#{==:#{@tmx_bind_rename_pane},on}" "bind-key P command-prompt -I '#{@tmx_label}' -p 'Pane name:' \"set-option -p @tmx_label '%%'\""
+
+unbind-key -q -n C-t
+if -F "#{==:#{@tmx_bind_new_tab},on}" "bind-key -n C-t new-window -c '#{pane_current_path}'"
+unbind-key -q -n M-t
+if -F "#{==:#{@tmx_bind_new_tab},on}" "bind-key -n M-t new-window -c '#{pane_current_path}'"
+
+unbind-key -q -n C-1
+unbind-key -q -n C-2
+unbind-key -q -n C-3
+unbind-key -q -n C-4
+unbind-key -q -n C-5
+unbind-key -q -n C-6
+unbind-key -q -n C-7
+unbind-key -q -n C-8
+unbind-key -q -n C-9
+unbind-key -q -n C-0
+unbind-key -q -n M-1
+unbind-key -q -n M-2
+unbind-key -q -n M-3
+unbind-key -q -n M-4
+unbind-key -q -n M-5
+unbind-key -q -n M-6
+unbind-key -q -n M-7
+unbind-key -q -n M-8
+unbind-key -q -n M-9
+unbind-key -q -n M-0
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-1 select-window -t 0"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-2 select-window -t 1"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-3 select-window -t 2"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-4 select-window -t 3"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-5 select-window -t 4"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-6 select-window -t 5"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-7 select-window -t 6"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-8 select-window -t 7"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-9 select-window -t 8"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n C-0 select-window -t 9"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-1 select-window -t 0"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-2 select-window -t 1"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-3 select-window -t 2"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-4 select-window -t 3"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-5 select-window -t 4"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-6 select-window -t 5"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-7 select-window -t 6"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-8 select-window -t 7"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-9 select-window -t 8"
+if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-0 select-window -t 9"

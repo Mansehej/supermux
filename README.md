@@ -6,17 +6,19 @@ Directory-scoped tmux session manager + OpenTUI picker (sessions + windows).
 
 - tmux is required
 - bun is required for interactive commands (`supermux`, `supermux kill`, `supermux detach` outside tmux)
+- supermux uses a dedicated tmux socket (`supermux`) by default
 
 ```sh
 ./scripts/install.sh
 ```
 
-Then append the snippet to your tmux config and reload tmux:
+Apply snippet styling to the dedicated supermux server:
 
 ```sh
-cat ./config/tmux.conf.snippet >> ~/.tmux.conf
-tmux source-file ~/.tmux.conf
+tmux -L supermux source-file ./config/tmux.conf.snippet
 ```
+
+If you want the same styling and keybinds on your regular tmux server too, append the snippet to `~/.tmux.conf` and reload.
 
 ## Usage
 
@@ -32,6 +34,11 @@ supermux detach NAME       # detach clients attached to scoped session NAME
 ## Notes
 
 - Scope mode: set `TMX_SCOPE_MODE=git` to scope sessions by git root instead of exact `pwd`.
+- Socket selection: use `--socket NAME` / `TMX_TMUX_SOCKET` (or `--socket-path PATH` / `TMX_TMUX_SOCKET_PATH`).
+- Opt out of the dedicated server: set `TMX_TMUX_SOCKET=` to use your default tmux server.
 - tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
+- Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).
+- Tab keybind settings: `@tmx_bind_new_tab`, `@tmx_bind_tab_select` (`on`/`off`).
+- For macOS terminals, Option usually needs to be configured as Meta/Alt for `Alt/Option-*` bindings.
 - Example toggle: `tmux set -g @tmx_bind_split off; tmux source-file ~/.tmux.conf`
 - If `Ctrl-s` detach is enabled and your terminal uses XON/XOFF flow control, run `stty -ixon`.
