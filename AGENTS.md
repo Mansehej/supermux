@@ -7,7 +7,10 @@ This repository is a small Bash project: `supermux`, a directory-scoped tmux ses
 - `bin/supermux` - main CLI (Bash; installed entrypoint)
 - `scripts/install.sh` - installs the CLI into `~/.local/bin/`
 - `scripts/opentui-picker.ts` - OpenTUI picker/kill/detach UI
+- `scripts/build-deb.sh` - builds Debian `.deb` packages
 - `config/tmux.conf.snippet` - optional tmux statusline + keybinds snippet
+- `packaging/homebrew/supermux.rb` - Homebrew formula
+- `package.json` - npm package metadata
 
 ## Prerequisites
 
@@ -18,6 +21,8 @@ This repository is a small Bash project: `supermux`, a directory-scoped tmux ses
   - `git` (for `TMX_SCOPE_MODE=git`)
   - `shasum` or `python3` (hashing fallback); `cksum` as last resort
   - `column` (pretty table output)
+  - `pilotty` (for e2e tests)
+  - `dpkg-deb` (for `.deb` packaging)
 
 ## Build / lint / test commands
 
@@ -34,9 +39,14 @@ There is no build step (scripts are run directly).
 ### Install
 
 - Install to `~/.local/bin`: `./scripts/install.sh`
-- Append tmux snippet + reload:
-  - `cat ./config/tmux.conf.snippet >> ~/.tmux.conf`
-  - `tmux source-file ~/.tmux.conf`
+- Apply tmux snippet to dedicated supermux server:
+  - `tmux -L supermux source-file ~/.local/share/supermux/tmux.conf.snippet`
+
+### Packaging
+
+- npm tarball: `npm pack`
+- Homebrew local install: `brew install --HEAD ./packaging/homebrew/supermux.rb`
+- Debian package: `./scripts/build-deb.sh 0.2.0`
 
 ### Lint (ShellCheck)
 
@@ -70,6 +80,8 @@ There is no build step (scripts are run directly).
 These are part of the user-facing interface; keep them stable.
 
 - `TMX_TMUX_BIN` - override tmux binary (default: `tmux`)
+- `TMX_TMUX_SOCKET` / `--socket NAME` - tmux socket name (default: `supermux`)
+- `TMX_TMUX_SOCKET_PATH` / `--socket-path PATH` - tmux socket path override
 - `TMX_SCOPE_DIR` / `--scope DIR` - override scope directory
 - `TMX_SCOPE_MODE` / `--scope-mode pwd|git` - scope by exact dir or git root
 - `TMX_QUERY` / `TMX_PROCESS_QUERY` / `--query STR` - prefilter picker entries

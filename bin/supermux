@@ -36,12 +36,30 @@ resolve_opentui_picker_script() {
     return 0
   fi
 
+  script="${self_dir}/../share/supermux/opentui-picker.ts"
+  if [[ -f "$script" ]]; then
+    printf '%s' "$script"
+    return 0
+  fi
+
   if [[ -n "${HOME:-}" ]]; then
     script="${HOME}/.local/share/supermux/opentui-picker.ts"
     if [[ -f "$script" ]]; then
       printf '%s' "$script"
       return 0
     fi
+  fi
+
+  script="/usr/local/share/supermux/opentui-picker.ts"
+  if [[ -f "$script" ]]; then
+    printf '%s' "$script"
+    return 0
+  fi
+
+  script="/usr/share/supermux/opentui-picker.ts"
+  if [[ -f "$script" ]]; then
+    printf '%s' "$script"
+    return 0
   fi
 
   die "opentui picker script not found; reinstall with ./scripts/install.sh"

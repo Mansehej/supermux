@@ -39,6 +39,16 @@ supermux detach NAME       # detach clients attached to scoped session NAME
 ./test/run.sh all    # run everything
 ```
 
+## Packaging
+
+```sh
+npm pack                          # npm tarball
+brew install --HEAD ./packaging/homebrew/supermux.rb
+./scripts/build-deb.sh 0.2.0      # Debian package to dist/
+```
+
+See `packaging/README.md` for publish/distribution notes.
+
 ## Notes
 
 - Scope mode: set `TMX_SCOPE_MODE=git` to scope sessions by git root instead of exact `pwd`.

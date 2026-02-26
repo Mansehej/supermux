@@ -1,0 +1,34 @@
+{
+  "name": "supermux",
+  "version": "0.2.0",
+  "description": "Directory-scoped tmux session manager with an OpenTUI picker",
+  "bin": {
+    "supermux": "bin/supermux"
+  },
+  "files": [
+    "bin/supermux",
+    "config/tmux.conf.snippet",
+    "scripts/opentui-picker.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "./test/run.sh all",
+    "test:unit": "./test/run.sh unit",
+    "test:e2e": "./test/run.sh e2e"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mansehej/supermux.git"
+  },
+  "homepage": "https://github.com/Mansehej/supermux#readme",
+  "bugs": {
+    "url": "https://github.com/Mansehej/supermux/issues"
+  },
+  "keywords": [
+    "tmux",
+    "terminal",
+    "session-manager",
+    "tui"
+  ],
+  "license": "UNLICENSED"
+}

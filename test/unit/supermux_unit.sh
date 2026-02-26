@@ -80,9 +80,56 @@ TMUX_STUB
   rm -f "$stub" "$out"
 }
 
+resolve_picker_script_tests() {
+  local old_self old_home old_override
+  old_self="${TMX_SELF:-}"
+  old_home="${HOME:-}"
+  old_override="${TMX_OPENTUI_PICKER_SCRIPT:-}"
+
+  local temp
+  temp="$(mktemp -d "${TMPDIR:-/tmp}/supermux-picker-path.XXXXXX")"
+
+  mkdir -p "${temp}/bin"
+  mkdir -p "${temp}/scripts"
+  mkdir -p "${temp}/share/supermux"
+  mkdir -p "${temp}/home/.local/share/supermux"
+
+  local override_path scripts_path share_path home_path
+  override_path="${temp}/override-picker.ts"
+  scripts_path="${temp}/bin/../scripts/opentui-picker.ts"
+  share_path="${temp}/bin/../share/supermux/opentui-picker.ts"
+  home_path="${temp}/home/.local/share/supermux/opentui-picker.ts"
+
+  : >"$override_path"
+  : >"${temp}/scripts/opentui-picker.ts"
+  : >"${temp}/share/supermux/opentui-picker.ts"
+  : >"$home_path"
+
+  TMX_SELF="${temp}/bin/supermux"
+  HOME="${temp}/home"
+
+  TMX_OPENTUI_PICKER_SCRIPT="$override_path"
+  assert_eq "$override_path" "$(resolve_opentui_picker_script)" "resolve uses explicit override"
+
+  TMX_OPENTUI_PICKER_SCRIPT=""
+  assert_eq "$scripts_path" "$(resolve_opentui_picker_script)" "resolve uses adjacent scripts path"
+
+  rm -f "$scripts_path"
+  assert_eq "$share_path" "$(resolve_opentui_picker_script)" "resolve uses adjacent share path"
+
+  rm -f "$share_path"
+  assert_eq "$home_path" "$(resolve_opentui_picker_script)" "resolve falls back to home local share"
+
+  TMX_SELF="$old_self"
+  HOME="$old_home"
+  TMX_OPENTUI_PICKER_SCRIPT="$old_override"
+  rm -rf "$temp"
+}
+
 sanitize_tests
 short_path_tests
 tmux_cmd_socket_tests
+resolve_picker_script_tests
 
 if [[ "$TESTS_FAILED" -gt 0 ]]; then
   printf '\n%d/%d tests failed\n' "$TESTS_FAILED" "$TESTS_RUN"
