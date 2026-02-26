@@ -8,6 +8,7 @@ This repository is a small Bash project: `supermux`, a directory-scoped tmux ses
 - `scripts/install.sh` - installs the CLI into `~/.local/bin/`
 - `scripts/opentui-picker.ts` - OpenTUI picker/kill/detach UI
 - `scripts/build-deb.sh` - builds Debian `.deb` packages
+- `scripts/release.sh` - release automation (version bump + tag + brew formula sha)
 - `config/tmux.conf.snippet` - optional tmux statusline + keybinds snippet
 - `packaging/homebrew/supermux.rb` - Homebrew formula
 - `package.json` - npm package metadata
@@ -47,6 +48,7 @@ There is no build step (scripts are run directly).
 - npm tarball: `npm pack`
 - Homebrew local install: `brew install --HEAD ./packaging/homebrew/supermux.rb`
 - Debian package: `./scripts/build-deb.sh 0.2.0`
+- Release automation: `./scripts/release.sh 0.3.0`
 
 ### Lint (ShellCheck)
 

@@ -14,7 +14,8 @@
   "scripts": {
     "test": "./test/run.sh all",
     "test:unit": "./test/run.sh unit",
-    "test:e2e": "./test/run.sh e2e"
+    "test:e2e": "./test/run.sh e2e",
+    "release": "./scripts/release.sh"
   },
   "repository": {
     "type": "git",

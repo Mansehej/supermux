@@ -1,5 +1,15 @@
 # Packaging
 
+## Release automation
+
+Use the release script to bump `package.json`, create/push a `vX.Y.Z` git tag, and rewrite the Homebrew formula with the GitHub tarball SHA:
+
+```sh
+./scripts/release.sh 0.3.0
+```
+
+By default it runs unit tests. Use `--full-tests` to run unit + e2e, or `--skip-tests` to skip test execution.
+
 ## npm
 
 Build a publishable tarball:

@@ -45,6 +45,7 @@ supermux detach NAME       # detach clients attached to scoped session NAME
 npm pack                          # npm tarball
 brew install --HEAD ./packaging/homebrew/supermux.rb
 ./scripts/build-deb.sh 0.2.0      # Debian package to dist/
+./scripts/release.sh 0.3.0         # bump version, tag, and update Homebrew sha
 ```
 
 See `packaging/README.md` for publish/distribution notes.
