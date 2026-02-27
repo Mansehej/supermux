@@ -36,6 +36,7 @@ const colorMode = (process.env.TMX_COLOR_MODE ?? (termProgram === "Apple_Termina
 const isAnsi = colorMode === "ansi"
 const useShadedBackgrounds = !isAnsi
 const inTmux = Boolean(process.env.TMUX)
+const pickerDetachKey = inTmux ? "Ctrl-Y" : "Ctrl-D"
 
 const normalizeSessionName = (value: string) =>
   value
@@ -159,7 +160,7 @@ const helpText =
     ? "Enter kill  Esc cancel"
     : mode === "detach"
       ? "Enter detach  Esc cancel"
-      : `Enter attach  Ctrl-N new  ${inTmux ? "Ctrl-Y" : "Ctrl-D"} detach  Ctrl-X kill  Ctrl-R refresh  Esc cancel`
+      : `Enter attach  Ctrl-N new  ${pickerDetachKey} detach target  Ctrl-X kill  Ctrl-R refresh${inTmux ? "  Ctrl-B d detach self" : ""}  Esc cancel`
 
 hero.add(
   new TextRenderable(renderer, {
@@ -354,9 +355,10 @@ renderer.keyInput.on("keypress", (key) => {
   }
 
   const item = get(index)
+  const detachInPicker = key.ctrl && (inTmux ? key.name === "y" : key.name === "d")
 
   if (mode === "pick") {
-    if (key.ctrl && (key.name === "d" || key.name === "y")) {
+    if (detachInPicker) {
       void write("detach", forSessionAction(item))
       return
     }
