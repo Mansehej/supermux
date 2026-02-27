@@ -36,8 +36,8 @@ set -g pane-border-lines single
 set -g pane-border-style "fg=#1f2937"
 set -g pane-active-border-style "fg=#ff7a18"
 
-set -g pane-border-status top
-set -g pane-border-format "#[bg=#111827]#{?pane_active,#[fg=#ff7a18]#[bold]|,#[fg=#6b7280] } #[fg=#e5e7eb]#{pane_index}:#{=20:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}} #[default]"
+set -g pane-border-status bottom
+set -g pane-border-format "#{?pane_active,#[bg=#111827]#[fg=#ff7a18]#[bold] #{pane_index}:#{=18:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}} #[default]#{?#{>:#{pane_width},78},#[align=right]#[fg=#5f748e] C-t new  C-Left/Right tabs  C-d/C-D split #[default],},#[bg=#111827]#[fg=#6b7280] #{pane_index}:#{=18:#{?@tmx_label,#{@tmx_label},#{pane_current_command}}} #[default]}"
 
 unbind-key -q -n C-d
 if -F "#{==:#{@tmx_bind_split},on}" "bind-key -n C-d split-window -h -c '#{pane_current_path}'"
