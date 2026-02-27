@@ -58,7 +58,7 @@ See `packaging/README.md` for publish/distribution notes.
 - Socket selection: use `--socket NAME` / `TMX_TMUX_SOCKET` (or `--socket-path PATH` / `TMX_TMUX_SOCKET_PATH`).
 - Snippet path override: `TMX_TMUX_SNIPPET_FILE=/path/to/tmux.conf.snippet`.
 - Opt out of the dedicated server: set `TMX_TMUX_SOCKET=` to use your default tmux server.
-- Split keybinds: `Ctrl-D` splits right; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits down.
+- Split keybinds: `Ctrl-D` splits down; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits right.
 - tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_split_vertical`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
 - Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).
 - Tabs are 1-indexed (`base-index 1`), matching the shortcut labels.

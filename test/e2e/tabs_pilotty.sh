@@ -61,8 +61,8 @@ keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" C-NPage                next-window"* ]] || die "missing Ctrl-PageDown tab cycle bind"
 [[ "$keys" == *" M-PPage                previous-window"* ]] || die "missing Alt-PageUp tab cycle bind"
 [[ "$keys" == *" M-NPage                next-window"* ]] || die "missing Alt-PageDown tab cycle bind"
-[[ "$keys" == *" C-D                    split-window -v -c \"#{pane_current_path}\""* ]] || die "missing Ctrl-Shift-D bind"
-[[ "$keys" == *" M-D                    split-window -v -c \"#{pane_current_path}\""* ]] || die "missing Alt-Shift-D bind"
+[[ "$keys" == *" C-D                    split-window -h -c \"#{pane_current_path}\""* ]] || die "missing Ctrl-Shift-D bind"
+[[ "$keys" == *" M-D                    split-window -h -c \"#{pane_current_path}\""* ]] || die "missing Alt-Shift-D bind"
 [[ "$keys" == *" MouseUp3Status         display-menu"* ]] || die "missing right-click tab menu bind"
 printf 'ok - keybindings registered\n'
 
@@ -106,8 +106,8 @@ keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" C-NPage                next-window"* ]] && die "Ctrl-PageDown should be disabled"
 [[ "$keys" == *" M-PPage                previous-window"* ]] && die "Alt-PageUp should be disabled"
 [[ "$keys" == *" M-NPage                next-window"* ]] && die "Alt-PageDown should be disabled"
-[[ "$keys" == *" C-D                    split-window -v -c \"#{pane_current_path}\""* ]] && die "Ctrl-Shift-D should be disabled"
-[[ "$keys" == *" M-D                    split-window -v -c \"#{pane_current_path}\""* ]] && die "Alt-Shift-D should be disabled"
+[[ "$keys" == *" C-D                    split-window -h -c \"#{pane_current_path}\""* ]] && die "Ctrl-Shift-D should be disabled"
+[[ "$keys" == *" M-D                    split-window -h -c \"#{pane_current_path}\""* ]] && die "Alt-Shift-D should be disabled"
 printf 'ok - keybinding toggles disable tab and vertical split bindings\n'
 
 printf 'all e2e checks passed\n'
