@@ -50,6 +50,7 @@ done
 
 keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" C-t                    new-window"* ]] || die "missing Ctrl-T bind"
+[[ "$keys" == *" C-p                    display-menu -T \"#[align=centre]SUPERMUX\""* ]] || die "missing Ctrl-P supermux menu bind"
 [[ "$keys" == *" M-t                    new-window"* ]] || die "missing Alt-T bind"
 [[ "$keys" == *" C-1                    select-window -t 1"* ]] || die "missing Ctrl-1 bind"
 [[ "$keys" == *" M-1                    select-window -t 1"* ]] || die "missing Alt-1 bind"
