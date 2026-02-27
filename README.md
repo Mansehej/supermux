@@ -61,6 +61,7 @@ See `packaging/README.md` for publish/distribution notes.
 - Split keybinds: `Ctrl-D` splits right; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits down.
 - tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_split_vertical`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
 - Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).
+- Tabs are 1-indexed (`base-index 1`), matching the shortcut labels.
 - Tab fallback controls: `Ctrl-Left`/`Ctrl-Right` (or `Alt-Left`/`Alt-Right`) cycle previous/next window.
 - Additional tab fallback controls: `Ctrl-PageUp`/`Ctrl-PageDown` (and `Alt-PageUp`/`Alt-PageDown`) cycle previous/next window.
 - Right-click tab menu is bound on mouse-up for better Apple Terminal behavior.

@@ -51,8 +51,8 @@ done
 keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" C-t                    new-window"* ]] || die "missing Ctrl-T bind"
 [[ "$keys" == *" M-t                    new-window"* ]] || die "missing Alt-T bind"
-[[ "$keys" == *" C-1                    select-window -t 0"* ]] || die "missing Ctrl-1 bind"
-[[ "$keys" == *" M-1                    select-window -t 0"* ]] || die "missing Alt-1 bind"
+[[ "$keys" == *" C-1                    select-window -t 1"* ]] || die "missing Ctrl-1 bind"
+[[ "$keys" == *" M-1                    select-window -t 1"* ]] || die "missing Alt-1 bind"
 [[ "$keys" == *" C-Left                 previous-window"* ]] || die "missing Ctrl-Left tab cycle bind"
 [[ "$keys" == *" C-Right                next-window"* ]] || die "missing Ctrl-Right tab cycle bind"
 [[ "$keys" == *" M-Left                 previous-window"* ]] || die "missing Alt-Left tab cycle bind"
@@ -68,24 +68,24 @@ printf 'ok - keybindings registered\n'
 
 pilotty key -s "$PILOTTY_SESSION" Ctrl+T >/dev/null
 pilotty key -s "$PILOTTY_SESSION" Ctrl+T >/dev/null
-assert_eq "2" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-T creates and switches windows"
+assert_eq "3" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-T creates and switches windows"
 
 pilotty type -s "$PILOTTY_SESSION" $'\e[49;5u' >/dev/null
-assert_eq "0" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-1 sequence switches to first tab"
+assert_eq "1" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-1 sequence switches to first tab"
 
 pilotty type -s "$PILOTTY_SESSION" $'\e[51;5u' >/dev/null
-assert_eq "2" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-3 sequence switches to third tab"
+assert_eq "3" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-3 sequence switches to third tab"
 
 pilotty type -s "$PILOTTY_SESSION" $'\e1' >/dev/null
-assert_eq "0" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Alt-1 sequence switches to first tab"
+assert_eq "1" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Alt-1 sequence switches to first tab"
 
 pilotty type -s "$PILOTTY_SESSION" $'\e3' >/dev/null
-assert_eq "2" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Alt-3 sequence switches to third tab"
+assert_eq "3" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Alt-3 sequence switches to third tab"
 
 pilotty type -s "$PILOTTY_SESSION" $'\e1' >/dev/null
-pane_before="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:0" '#{window_panes}')"
+pane_before="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{window_panes}')"
 pilotty type -s "$PILOTTY_SESSION" $'\eD' >/dev/null
-pane_after="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:0" '#{window_panes}')"
+pane_after="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{window_panes}')"
 assert_eq "$((pane_before + 1))" "$pane_after" "Alt-Shift-D splits current tab vertically"
 
 tmux -L "$SOCKET" set -g @tmx_bind_new_tab off
@@ -96,8 +96,8 @@ tmux -L "$SOCKET" source-file "$SNIPPET"
 keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" C-t                    new-window"* ]] && die "Ctrl-T should be disabled"
 [[ "$keys" == *" M-t                    new-window"* ]] && die "Alt-T should be disabled"
-[[ "$keys" == *" C-1                    select-window -t 0"* ]] && die "Ctrl-1 should be disabled"
-[[ "$keys" == *" M-1                    select-window -t 0"* ]] && die "Alt-1 should be disabled"
+[[ "$keys" == *" C-1                    select-window -t 1"* ]] && die "Ctrl-1 should be disabled"
+[[ "$keys" == *" M-1                    select-window -t 1"* ]] && die "Alt-1 should be disabled"
 [[ "$keys" == *" C-Left                 previous-window"* ]] && die "Ctrl-Left should be disabled"
 [[ "$keys" == *" C-Right                next-window"* ]] && die "Ctrl-Right should be disabled"
 [[ "$keys" == *" M-Left                 previous-window"* ]] && die "Alt-Left should be disabled"
