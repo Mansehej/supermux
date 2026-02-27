@@ -65,6 +65,66 @@ resolve_opentui_picker_script() {
   die "opentui picker script not found; reinstall with ./scripts/install.sh"
 }
 
+resolve_tmux_snippet_file() {
+  local override="${TMX_TMUX_SNIPPET_FILE:-}"
+  if [[ -n "$override" ]]; then
+    [[ -f "$override" ]] || die "tmux snippet not found: $override"
+    printf '%s' "$override"
+    return 0
+  fi
+
+  local self_dir
+  self_dir="$(dirname "$TMX_SELF")"
+
+  local snippet
+  snippet="${self_dir}/../config/tmux.conf.snippet"
+  if [[ -f "$snippet" ]]; then
+    printf '%s' "$snippet"
+    return 0
+  fi
+
+  snippet="${self_dir}/../share/supermux/tmux.conf.snippet"
+  if [[ -f "$snippet" ]]; then
+    printf '%s' "$snippet"
+    return 0
+  fi
+
+  if [[ -n "${HOME:-}" ]]; then
+    snippet="${HOME}/.local/share/supermux/tmux.conf.snippet"
+    if [[ -f "$snippet" ]]; then
+      printf '%s' "$snippet"
+      return 0
+    fi
+  fi
+
+  snippet="/usr/local/share/supermux/tmux.conf.snippet"
+  if [[ -f "$snippet" ]]; then
+    printf '%s' "$snippet"
+    return 0
+  fi
+
+  snippet="/usr/share/supermux/tmux.conf.snippet"
+  if [[ -f "$snippet" ]]; then
+    printf '%s' "$snippet"
+    return 0
+  fi
+
+  return 1
+}
+
+ensure_tmux_snippet_loaded() {
+  if [[ -z "$TMUX_SOCKET_PATH" && -z "$TMUX_SOCKET_NAME" ]]; then
+    return 0
+  fi
+
+  local snippet
+  snippet="$(resolve_tmux_snippet_file || true)"
+  [[ -n "$snippet" ]] || return 0
+
+  tmux_cmd start-server >/dev/null 2>&1 || true
+  tmux_cmd source-file "$snippet" >/dev/null 2>&1 || true
+}
+
 run_opentui_picker_once() {
   local mode="${1:-pick}"
   local picker_script
@@ -330,6 +390,8 @@ choose_actual_session_name() {
 attach_or_switch() {
   local session="$1"
   [[ -n "$session" ]] || return 0
+
+  ensure_tmux_snippet_loaded
 
   if [[ -n "${TMUX:-}" ]] && tmux_cmd display-message -p '#{client_pid}' >/dev/null 2>&1; then
     tmux_cmd switch-client -t "$session"

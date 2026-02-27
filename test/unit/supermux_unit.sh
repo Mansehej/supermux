@@ -126,10 +126,57 @@ resolve_picker_script_tests() {
   rm -rf "$temp"
 }
 
+resolve_tmux_snippet_tests() {
+  local old_self old_home old_override
+  old_self="${TMX_SELF:-}"
+  old_home="${HOME:-}"
+  old_override="${TMX_TMUX_SNIPPET_FILE:-}"
+
+  local temp
+  temp="$(mktemp -d "${TMPDIR:-/tmp}/supermux-snippet-path.XXXXXX")"
+
+  mkdir -p "${temp}/bin"
+  mkdir -p "${temp}/config"
+  mkdir -p "${temp}/share/supermux"
+  mkdir -p "${temp}/home/.local/share/supermux"
+
+  local override_path config_path share_path home_path
+  override_path="${temp}/override-tmux.conf.snippet"
+  config_path="${temp}/bin/../config/tmux.conf.snippet"
+  share_path="${temp}/bin/../share/supermux/tmux.conf.snippet"
+  home_path="${temp}/home/.local/share/supermux/tmux.conf.snippet"
+
+  : >"$override_path"
+  : >"${temp}/config/tmux.conf.snippet"
+  : >"${temp}/share/supermux/tmux.conf.snippet"
+  : >"$home_path"
+
+  TMX_SELF="${temp}/bin/supermux"
+  HOME="${temp}/home"
+
+  TMX_TMUX_SNIPPET_FILE="$override_path"
+  assert_eq "$override_path" "$(resolve_tmux_snippet_file)" "resolve snippet uses explicit override"
+
+  TMX_TMUX_SNIPPET_FILE=""
+  assert_eq "$config_path" "$(resolve_tmux_snippet_file)" "resolve snippet uses adjacent config path"
+
+  rm -f "${temp}/config/tmux.conf.snippet"
+  assert_eq "$share_path" "$(resolve_tmux_snippet_file)" "resolve snippet uses adjacent share path"
+
+  rm -f "${temp}/share/supermux/tmux.conf.snippet"
+  assert_eq "$home_path" "$(resolve_tmux_snippet_file)" "resolve snippet falls back to home local share"
+
+  TMX_SELF="$old_self"
+  HOME="$old_home"
+  TMX_TMUX_SNIPPET_FILE="$old_override"
+  rm -rf "$temp"
+}
+
 sanitize_tests
 short_path_tests
 tmux_cmd_socket_tests
 resolve_picker_script_tests
+resolve_tmux_snippet_tests
 
 if [[ "$TESTS_FAILED" -gt 0 ]]; then
   printf '\n%d/%d tests failed\n' "$TESTS_FAILED" "$TESTS_RUN"

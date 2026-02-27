@@ -84,6 +84,7 @@ These are part of the user-facing interface; keep them stable.
 - `TMX_TMUX_BIN` - override tmux binary (default: `tmux`)
 - `TMX_TMUX_SOCKET` / `--socket NAME` - tmux socket name (default: `supermux`)
 - `TMX_TMUX_SOCKET_PATH` / `--socket-path PATH` - tmux socket path override
+- `TMX_TMUX_SNIPPET_FILE` - explicit tmux snippet path override for auto-sourcing
 - `TMX_SCOPE_DIR` / `--scope DIR` - override scope directory
 - `TMX_SCOPE_MODE` / `--scope-mode pwd|git` - scope by exact dir or git root
 - `TMX_QUERY` / `TMX_PROCESS_QUERY` / `--query STR` - prefilter picker entries

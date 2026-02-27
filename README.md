@@ -18,6 +18,8 @@ Apply snippet styling to the dedicated supermux server:
 tmux -L supermux source-file ./config/tmux.conf.snippet
 ```
 
+`supermux` auto-sources the snippet on attach/switch when it can find `tmux.conf.snippet` (repo, install share path, or system share path).
+
 If you want the same styling and keybinds on your regular tmux server too, append the snippet to `~/.tmux.conf` and reload.
 
 ## Usage
@@ -54,6 +56,7 @@ See `packaging/README.md` for publish/distribution notes.
 
 - Scope mode: set `TMX_SCOPE_MODE=git` to scope sessions by git root instead of exact `pwd`.
 - Socket selection: use `--socket NAME` / `TMX_TMUX_SOCKET` (or `--socket-path PATH` / `TMX_TMUX_SOCKET_PATH`).
+- Snippet path override: `TMX_TMUX_SNIPPET_FILE=/path/to/tmux.conf.snippet`.
 - Opt out of the dedicated server: set `TMX_TMUX_SOCKET=` to use your default tmux server.
 - Split keybinds: `Ctrl-D` splits right; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits down.
 - tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_split_vertical`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
