@@ -63,6 +63,7 @@ keys="$(tmux -L "$SOCKET" list-keys -T root)"
 [[ "$keys" == *" M-NPage                next-window"* ]] || die "missing Alt-PageDown tab cycle bind"
 [[ "$keys" == *" C-D                    split-window -v -c \"#{pane_current_path}\""* ]] || die "missing Ctrl-Shift-D bind"
 [[ "$keys" == *" M-D                    split-window -v -c \"#{pane_current_path}\""* ]] || die "missing Alt-Shift-D bind"
+[[ "$keys" == *" C-w                    run-shell "* ]] || die "missing close-to-home C-w bind"
 [[ "$keys" == *" MouseUp3Status         display-menu"* ]] || die "missing right-click tab menu bind"
 printf 'ok - keybindings registered\n'
 
@@ -87,6 +88,16 @@ pane_before="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{wi
 pilotty type -s "$PILOTTY_SESSION" $'\eD' >/dev/null
 pane_after="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{window_panes}')"
 assert_eq "$((pane_before + 1))" "$pane_after" "Alt-Shift-D splits current tab vertically"
+
+tmux -L "$SOCKET" set -g @tmx_home_cmd "sleep 30"
+tmux -L "$SOCKET" source-file "$SNIPPET"
+tmux -L "$SOCKET" new-session -d -s closehome
+tmux -L "$SOCKET" switch-client -t closehome
+sleep 0.2
+pilotty key -s "$PILOTTY_SESSION" Ctrl+W >/dev/null
+sleep 0.2
+tmux -L "$SOCKET" has-session -t closehome >/dev/null 2>&1 || die "Ctrl-W should not destroy last session"
+assert_eq "sleep 30" "$(tmux -L "$SOCKET" list-panes -t closehome -F '#{pane_start_command}' | awk 'NR==1{gsub(/"/, ""); print; exit}')" "Ctrl-W on last pane returns to home command"
 
 tmux -L "$SOCKET" set -g @tmx_bind_new_tab off
 tmux -L "$SOCKET" set -g @tmx_bind_tab_select off

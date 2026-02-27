@@ -10,6 +10,7 @@ if -F "#{==:#{@tmx_bind_detach},}" "set -g @tmx_bind_detach on"
 if -F "#{==:#{@tmx_bind_rename_pane},}" "set -g @tmx_bind_rename_pane on"
 if -F "#{==:#{@tmx_bind_new_tab},}" "set -g @tmx_bind_new_tab on"
 if -F "#{==:#{@tmx_bind_tab_select},}" "set -g @tmx_bind_tab_select on"
+if -F "#{==:#{@tmx_home_cmd},}" "set -g @tmx_home_cmd supermux"
 
 set -g status-position top
 set -g status on
@@ -49,7 +50,7 @@ unbind-key -q -n M-D
 if -F "#{==:#{@tmx_bind_split_vertical},on}" "bind-key -n M-D split-window -v -c '#{pane_current_path}'"
 
 unbind-key -q -n C-w
-if -F "#{==:#{@tmx_bind_kill_pane},on}" "bind-key -n C-w kill-pane"
+if -F "#{==:#{@tmx_bind_kill_pane},on}" "bind-key -n C-w run-shell 'if [ \"#{window_panes}\" = \"1\" ]; then if [ \"#{session_windows}\" = \"1\" ]; then tmux respawn-pane -k -t \"#{pane_id}\" -c \"#{pane_current_path}\" \"$(tmux show-option -gv @tmx_home_cmd 2>/dev/null || printf supermux)\"; else tmux kill-window -t \"#{window_id}\"; fi; else tmux kill-pane -t \"#{pane_id}\"; fi'"
 
 unbind-key -q -n C-s
 if -F "#{==:#{@tmx_bind_detach},on}" "bind-key -n C-s detach-client"
@@ -120,6 +121,6 @@ if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-PPage previous-window"
 if -F "#{==:#{@tmx_bind_tab_select},on}" "bind-key -n M-NPage next-window"
 
 unbind-key -q -n MouseDown3Status
-bind-key -n MouseUp3Status display-menu -T "#[align=centre]TAB #{window_index}:#{window_name}" -t = -x W -y W "New Tab" t { new-window -a -c "#{pane_current_path}" } "Rename Tab" r { command-prompt -I "#{window_name}" "rename-window -t = '%%'" } '' "Close Tab" x { kill-window -t = }
+bind-key -n MouseUp3Status display-menu -T "#[align=centre]TAB #{window_index}:#{window_name}" -t = -x W -y W "New Tab" t { new-window -a -c "#{pane_current_path}" } "Rename Tab" r { command-prompt -I "#{window_name}" "rename-window -t = '%%'" } '' "Close Tab" x { run-shell 'if [ "#{session_windows}" = "1" ]; then tmux kill-pane -a -t "#{pane_id}" >/dev/null 2>&1 || true; tmux respawn-pane -k -t "#{pane_id}" -c "#{pane_current_path}" "$(tmux show-option -gv @tmx_home_cmd 2>/dev/null || printf supermux)"; else tmux kill-window -t "#{window_id}"; fi' }
 unbind-key -q -n MouseDown3StatusLeft
 bind-key -n MouseUp3StatusLeft display-menu -T "#[align=centre]SESSION #{session_name}" -t = -x M -y W "Previous Tab" p { previous-window } "Next Tab" n { next-window } '' "New Tab" t { new-window -a -c "#{pane_current_path}" }

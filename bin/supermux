@@ -122,6 +122,9 @@ ensure_tmux_snippet_loaded() {
   [[ -n "$snippet" ]] || return 0
 
   tmux_cmd start-server >/dev/null 2>&1 || true
+  if [[ -n "${TMX_SELF:-}" ]]; then
+    tmux_cmd set-option -gq @tmx_home_cmd "$TMX_SELF" >/dev/null 2>&1 || true
+  fi
   tmux_cmd source-file "$snippet" >/dev/null 2>&1 || true
 
   local session first_idx
