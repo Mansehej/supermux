@@ -1,5 +1,7 @@
 set -g mouse on
 set -g set-clipboard on
+set -g set-titles on
+set -g set-titles-string "supermux:#S:#I:#W"
 if-shell 'command -v pbcopy >/dev/null 2>&1' 'set -s copy-command "pbcopy"'
 set -sq extended-keys on
 
