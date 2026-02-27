@@ -59,7 +59,7 @@ See `packaging/README.md` for publish/distribution notes.
 - Snippet path override: `TMX_TMUX_SNIPPET_FILE=/path/to/tmux.conf.snippet`.
 - Opt out of the dedicated server: set `TMX_TMUX_SOCKET=` to use your default tmux server.
 - Split keybinds: `Ctrl-D` splits right; `Ctrl-Shift-D` (or `Alt/Option-Shift-D`) splits down.
-- `Alt/Option-B` opens the supermux control menu (session picker, kill picker, detach client, keybind toggles).
+- `Ctrl-B` keeps tmux prefix behavior; press `Ctrl-B` then `b` to open the supermux control menu.
 - In the control menu, you can set extra custom keys for split/new-tab/tab-cycle actions and clear them later.
 - tmux snippet keybind settings: `@tmx_bind_split`, `@tmx_bind_split_vertical`, `@tmx_bind_kill_pane`, `@tmx_bind_detach`, `@tmx_bind_rename_pane` (`on`/`off`).
 - Tab-like window controls in tmux snippet: `Ctrl-T` (or `Alt/Option-T`) creates/switches to a new window; `Ctrl-1`..`Ctrl-9` (or `Alt/Option-1`..`Alt/Option-9`) jump to windows 1..9 (plus `Ctrl/Alt-0` for 10).

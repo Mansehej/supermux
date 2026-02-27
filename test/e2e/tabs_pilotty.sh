@@ -49,8 +49,10 @@ done
 [[ "$local_ready" == "1" ]] || die "tmux test session did not start"
 
 keys="$(tmux -L "$SOCKET" list-keys -T root)"
+prefix_keys="$(tmux -L "$SOCKET" list-keys -T prefix)"
 [[ "$keys" == *" C-t                    new-window"* ]] || die "missing Ctrl-T bind"
-[[ "$keys" == *" M-b                    display-menu -T \"#[align=centre]SUPERMUX\""* ]] || die "missing Alt-B supermux menu bind"
+[[ "$prefix_keys" == *"-T prefix b"* ]] || die "missing Ctrl-B b menu binding"
+[[ "$prefix_keys" == *"display-menu -T \"#[align=centre]SUPERMUX\""* ]] || die "missing supermux menu command"
 [[ "$keys" == *" M-t                    new-window"* ]] || die "missing Alt-T bind"
 [[ "$keys" == *" C-1                    select-window -t 1"* ]] || die "missing Ctrl-1 bind"
 [[ "$keys" == *" M-1                    select-window -t 1"* ]] || die "missing Alt-1 bind"
