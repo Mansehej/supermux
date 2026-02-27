@@ -49,10 +49,9 @@ done
 [[ "$local_ready" == "1" ]] || die "tmux test session did not start"
 
 keys="$(tmux -L "$SOCKET" list-keys -T root)"
-prefix_keys="$(tmux -L "$SOCKET" list-keys -T prefix)"
 [[ "$keys" == *" C-t                    new-window"* ]] || die "missing Ctrl-T bind"
-[[ "$prefix_keys" == *"-T prefix b"* ]] || die "missing Ctrl-B b menu binding"
-[[ "$prefix_keys" == *"display-menu -T \"#[align=centre]SUPERMUX\""* ]] || die "missing supermux menu command"
+[[ "$(tmux -L "$SOCKET" show-options -gv prefix)" == "None" ]] || die "expected tmux prefix to be None"
+[[ "$keys" == *" C-b                    display-menu -T \"#[align=centre]SUPERMUX\""* ]] || die "missing Ctrl-B supermux menu bind"
 [[ "$keys" == *" M-t                    new-window"* ]] || die "missing Alt-T bind"
 [[ "$keys" == *" C-1                    select-window -t 1"* ]] || die "missing Ctrl-1 bind"
 [[ "$keys" == *" M-1                    select-window -t 1"* ]] || die "missing Alt-1 bind"
@@ -70,9 +69,16 @@ prefix_keys="$(tmux -L "$SOCKET" list-keys -T prefix)"
 [[ "$keys" == *" MouseUp3Status         display-menu"* ]] || die "missing right-click tab menu bind"
 printf 'ok - keybindings registered\n'
 
+windows_before="$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{session_windows}')"
+pilotty key -s "$PILOTTY_SESSION" Ctrl+B >/dev/null
+pilotty type -s "$PILOTTY_SESSION" c >/dev/null
+sleep 0.2
+windows_after="$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{session_windows}')"
+assert_eq "$((windows_before + 1))" "$windows_after" "Ctrl-B then c creates a new tab"
+
 pilotty key -s "$PILOTTY_SESSION" Ctrl+T >/dev/null
 pilotty key -s "$PILOTTY_SESSION" Ctrl+T >/dev/null
-assert_eq "3" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-T creates and switches windows"
+assert_eq "4" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-T creates and switches windows"
 
 pilotty type -s "$PILOTTY_SESSION" $'\e[49;5u' >/dev/null
 assert_eq "1" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{window_index}')" "Ctrl-1 sequence switches to first tab"
@@ -88,9 +94,14 @@ assert_eq "3" "$(tmux -L "$SOCKET" display-message -p -t "$TMUX_SESSION" '#{wind
 
 pilotty type -s "$PILOTTY_SESSION" $'\e1' >/dev/null
 pane_before="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{window_panes}')"
+pilotty key -s "$PILOTTY_SESSION" Ctrl+B >/dev/null
+pilotty type -s "$PILOTTY_SESSION" % >/dev/null
+sleep 0.2
+pane_mid="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{window_panes}')"
+assert_eq "$((pane_before + 1))" "$pane_mid" "Ctrl-B then % splits current tab right"
 pilotty type -s "$PILOTTY_SESSION" $'\eD' >/dev/null
 pane_after="$(tmux -L "$SOCKET" display-message -p -t "${TMUX_SESSION}:1" '#{window_panes}')"
-assert_eq "$((pane_before + 1))" "$pane_after" "Alt-Shift-D splits current tab vertically"
+assert_eq "$((pane_mid + 1))" "$pane_after" "Alt-Shift-D splits current tab vertically"
 
 tmux -L "$SOCKET" set -g @tmx_home_cmd "sleep 30"
 tmux -L "$SOCKET" source-file "$SNIPPET"
