@@ -123,6 +123,15 @@ ensure_tmux_snippet_loaded() {
 
   tmux_cmd start-server >/dev/null 2>&1 || true
   tmux_cmd source-file "$snippet" >/dev/null 2>&1 || true
+
+  local session first_idx
+  while IFS= read -r session; do
+    [[ -n "$session" ]] || continue
+    first_idx="$(tmux_cmd list-windows -t "$session" -F '#{window_index}' 2>/dev/null | awk 'NR==1{print; exit}')"
+    if [[ "$first_idx" == "0" ]]; then
+      tmux_cmd move-window -r -t "$session" >/dev/null 2>&1 || true
+    fi
+  done <<<"$(tmux_cmd list-sessions -F '#{session_name}' 2>/dev/null || true)"
 }
 
 run_opentui_picker_once() {
